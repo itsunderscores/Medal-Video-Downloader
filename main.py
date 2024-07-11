@@ -4,11 +4,20 @@ import subprocess
 import re
 
 def extract_content_id(url):
-    # Using regex to extract the content ID from the URL
-    match = re.search(r'(?:contentId=|/clips/)([a-zA-Z0-9_]{14})', url)
-    if match:
-        return match.group(1)
-    else:
+    try:
+        # Using regex to extract the content ID from the URL
+        match = re.search(r'(?:contentId=|/clips/)([a-zA-Z0-9_]{14,20})', url)
+        if match:
+            return match.group(1)
+        else:
+            # Handle other URL formats if needed
+            match = re.search(r'/clips/([a-zA-Z0-9_]+)', url)
+            if match:
+                return match.group(1)
+            else:
+                return None
+    except Exception as e:
+        print(f"Error extracting content ID: {e}")
         return None
 
 def extract_data_from_url(url, start_str, end_str):
